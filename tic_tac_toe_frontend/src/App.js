@@ -37,7 +37,7 @@ function App() {
         ...prev,
         [winner.winner]: prev[winner.winner] + 1
       }));
-      const timer = setTimeout(() => setShowConfetti(false), 3000);
+      const timer = setTimeout(() => setShowConfetti(false), 4500);
       return () => clearTimeout(timer);
     } else if (gameOver) {
       setScores(prev => ({ ...prev, ties: prev.ties + 1 }));
@@ -80,7 +80,18 @@ function App() {
 
   return (
     <div className="App">
-      {showConfetti && <Confetti />}
+      {showConfetti && (
+        <Confetti
+          width={window.innerWidth}
+          height={window.innerHeight}
+          recycle={false}
+          numberOfPieces={200}
+          gravity={0.3}
+          initialVelocityY={20}
+          colors={['var(--primary)', 'var(--secondary)', 'var(--accent)', '#ffffff']}
+          onConfettiComplete={() => setShowConfetti(false)}
+        />
+      )}
       <motion.h1
         className="welcome-heading"
         initial={{ y: -50, opacity: 0 }}
