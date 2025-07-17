@@ -1,29 +1,59 @@
 export const calculateBestMove = (squares) => {
-  // Implement minimax algorithm for AI moves
-  const emptySquares = squares
-    .map((square, index) => (square ? null : index))
-    .filter((index) => index !== null);
+  // Implementing minimax algorithm for optimal AI moves
+  const minimax = (board, depth, isMaximizing) => {
+    const winner = calculateWinner(board);
+    
+    // Terminal states
+    if (winner) {
+      return winner.winner === 'O' ? 10 - depth : depth - 10;
+    }
+    if (!board.includes(null)) {
+      return 0;
+    }
 
-  // If center is empty, take it
-  if (emptySquares.includes(4)) return 4;
+    if (isMaximizing) {
+      let bestScore = -Infinity;
+      for (let i = 0; i < board.length; i++) {
+        if (!board[i]) {
+          board[i] = 'O';
+          const score = minimax(board, depth + 1, false);
+          board[i] = null;
+          bestScore = Math.max(bestScore, score);
+        }
+      }
+      return bestScore;
+    } else {
+      let bestScore = Infinity;
+      for (let i = 0; i < board.length; i++) {
+        if (!board[i]) {
+          board[i] = 'X';
+          const score = minimax(board, depth + 1, true);
+          board[i] = null;
+          bestScore = Math.min(bestScore, score);
+        }
+      }
+      return bestScore;
+    }
+  };
 
-  // Try to win or block opponent from winning
-  for (const player of ['O', 'X']) {
-    for (const index of emptySquares) {
-      const squaresCopy = [...squares];
-      squaresCopy[index] = player;
-      if (calculateWinner(squaresCopy)) return index;
+  // Find the best move using minimax
+  let bestScore = -Infinity;
+  let bestMove = null;
+
+  for (let i = 0; i < squares.length; i++) {
+    if (!squares[i]) {
+      squares[i] = 'O';
+      const score = minimax(squares, 0, false);
+      squares[i] = null;
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestMove = i;
+      }
     }
   }
 
-  // Take corners if available
-  const corners = [0, 2, 6, 8].filter(corner => emptySquares.includes(corner));
-  if (corners.length > 0) {
-    return corners[Math.floor(Math.random() * corners.length)];
-  }
-
-  // Take any available square
-  return emptySquares[Math.floor(Math.random() * emptySquares.length)];
+  return bestMove;
 };
 
 export const calculateWinner = (squares) => {

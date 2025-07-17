@@ -45,7 +45,7 @@ function App() {
   }, [winner, gameOver]);
 
   const handleClick = (i) => {
-    if (squares[i] || (gameMode === 'AI' && !xIsNext) || gameOver) return;
+    if (squares[i] || gameOver || (gameMode === 'AI' && !xIsNext)) return;
 
     playClick();
     const newSquares = squares.slice();
