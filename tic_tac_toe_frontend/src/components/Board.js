@@ -140,6 +140,8 @@ const Board = ({ squares, onClick, winningLine }) => {
       className="board"
       role="grid"
       aria-label="Tic Tac Toe Board"
+      aria-live="polite"
+      aria-atomic="true"
     >
       {squares.map((square, i) => (
         <motion.button

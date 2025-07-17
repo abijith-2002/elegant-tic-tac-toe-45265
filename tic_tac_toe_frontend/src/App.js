@@ -105,7 +105,7 @@ function App() {
   if (isLoading) {
     return (
       <div className="loading-overlay">
-        <div className="loading-spinner" />
+        <div className="loading-spinner" data-testid="loading-spinner" />
       </div>
     );
   }
@@ -155,6 +155,8 @@ function App() {
         animate={{ opacity: 1 }}
         key={getStatus()}
         transition={{ duration: 0.3 }}
+        role="status"
+        aria-live="assertive"
       >
         {getStatus()}
       </motion.div>

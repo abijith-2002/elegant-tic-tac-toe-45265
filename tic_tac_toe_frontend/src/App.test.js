@@ -1,44 +1,86 @@
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import App from './App';
 
+// Mock all animation and sound related modules
+jest.mock('lottie-react', () => ({ __esModule: true, default: () => <div data-testid="lottie-animation" /> }));
+jest.mock('react-confetti', () => ({ __esModule: true, default: () => <div data-testid="confetti" /> }));
+jest.mock('use-sound', () => () => [jest.fn()]);
+jest.mock('./assets/animations/victory.json', () => ({}));
+jest.mock('./assets/animations/welcome.json', () => ({}));
+jest.mock('./assets/sounds/click.mp3', () => '');
+
 describe('Tic Tac Toe App', () => {
+  beforeEach(() => {
+    // Reset timers before each test
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    // Clean up timers after each test
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+  });
   beforeEach(() => {
     // Mock window.innerWidth/Height for Confetti component
     window.innerWidth = 1024;
     window.innerHeight = 768;
   });
 
-  test('renders welcome modal initially', () => {
+  test('renders welcome modal initially', async () => {
     render(<App />);
-    expect(screen.getByText(/Welcome to Tic Tac Toe!/i)).toBeInTheDocument();
-    expect(screen.getByText(/Let's Play!/i)).toBeInTheDocument();
+    
+    // Wait for loading screen to disappear and welcome modal to appear
+    await waitFor(() => {
+      expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
+    }, { timeout: 2000 });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Welcome to Tic Tac Toe!/i)).toBeInTheDocument();
+      expect(screen.getByText(/Let's Play!/i)).toBeInTheDocument();
+    });
   });
 
   test('shows mode selector after welcome modal', async () => {
     render(<App />);
     
+    // Wait for loading to complete
+    await waitFor(() => {
+      expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
+    }, { timeout: 2000 });
+
     // Click through welcome modal
-    const playButton = screen.getByText(/Let's Play!/i);
+    const playButton = await waitFor(() => screen.getByText(/Let's Play!/i));
     fireEvent.click(playButton);
 
     // Check mode selector appears
-    expect(screen.getByText(/Choose Your Game Mode/i)).toBeInTheDocument();
-    expect(screen.getByText(/Player vs Player/i)).toBeInTheDocument();
-    expect(screen.getByText(/Player vs AI/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/Choose Your Game Mode/i)).toBeInTheDocument();
+      expect(screen.getByText(/Player vs Player/i)).toBeInTheDocument();
+      expect(screen.getByText(/Player vs AI/i)).toBeInTheDocument();
+    });
   });
 
   test('starts PVP game mode correctly', async () => {
     render(<App />);
     
+    // Wait for loading to complete
+    await waitFor(() => {
+      expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
+    }, { timeout: 2000 });
+
     // Click through welcome modal
-    fireEvent.click(screen.getByText(/Let's Play!/i));
+    const playButton = await waitFor(() => screen.getByText(/Let's Play!/i));
+    fireEvent.click(playButton);
     
     // Select PVP mode
-    fireEvent.click(screen.getByText(/Player vs Player/i));
+    const pvpButton = await waitFor(() => screen.getByText(/Player vs Player/i));
+    fireEvent.click(pvpButton);
 
     // Verify game started
-    expect(screen.getByText(/X's Turn/i)).toBeInTheDocument();
-    expect(screen.getByText(/Scoreboard/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/X's Turn/i)).toBeInTheDocument();
+      expect(screen.getByText(/Scoreboard/i)).toBeInTheDocument();
+    });
   });
 
   test('handles player moves correctly', async () => {
