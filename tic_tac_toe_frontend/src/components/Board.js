@@ -3,31 +3,65 @@ import { motion } from 'framer-motion';
 
 const Board = ({ squares, onClick, winningLine }) => {
   const cellVariants = {
-    initial: { scale: 0, rotate: -180 },
-    animate: { scale: 1, rotate: 0 },
-    exit: { scale: 0, rotate: 180 }
+    initial: { 
+      scale: 0.8,
+      rotateX: -30,
+      rotateY: 45,
+      opacity: 0
+    },
+    animate: { 
+      scale: 1,
+      rotateX: 0,
+      rotateY: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 25
+      }
+    },
+    exit: { 
+      scale: 0.8,
+      rotateX: 30,
+      rotateY: -45,
+      opacity: 0
+    }
   };
 
   const symbolVariants = {
     x: {
-      initial: { pathLength: 0, opacity: 0 },
+      initial: { 
+        pathLength: 0,
+        opacity: 0,
+        scale: 0.8,
+        rotate: -45
+      },
       animate: { 
         pathLength: 1, 
         opacity: 1,
+        scale: 1,
+        rotate: 0,
         transition: { 
-          duration: 0.5,
-          ease: "easeInOut"
+          duration: 0.6,
+          ease: [0.6, 0.01, -0.05, 0.95],
+          opacity: { duration: 0.3 }
         }
       }
     },
     o: {
-      initial: { pathLength: 0, opacity: 0 },
+      initial: { 
+        pathLength: 0,
+        opacity: 0,
+        scale: 0.8
+      },
       animate: { 
         pathLength: 1, 
         opacity: 1,
+        scale: 1,
         transition: { 
-          duration: 0.5,
-          ease: "easeInOut"
+          duration: 0.6,
+          ease: [0.6, 0.01, -0.05, 0.95],
+          opacity: { duration: 0.3 }
         }
       }
     }
