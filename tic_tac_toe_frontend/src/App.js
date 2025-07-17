@@ -3,6 +3,8 @@ import WelcomeModal from './components/WelcomeModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import useSound from 'use-sound';
 import Confetti from 'react-confetti';
+import Lottie from 'lottie-react';
+import victoryAnimation from './assets/animations/victory.json';
 import Board from './components/Board';
 import Scoreboard from './components/Scoreboard';
 import ModeSelector from './components/ModeSelector';
@@ -190,26 +192,66 @@ function App() {
       <AnimatePresence>
         {winAnimation && (
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
-            transition={{
-              type: "spring",
-              stiffness: 200,
-              damping: 20
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             style={{
               position: 'fixed',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontSize: '5rem',
-              color: winner.winner === 'X' ? 'var(--primary-light)' : 'var(--secondary-light)',
-              textShadow: '0 0 20px rgba(255,255,255,0.5)',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
               zIndex: 1000
             }}
           >
-            {winner.winner} Wins!
+            <motion.div
+              initial={{ scale: 0, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0, y: 50 }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 20
+              }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '2rem'
+              }}
+            >
+              <Lottie
+                animationData={victoryAnimation}
+                autoplay
+                loop={false}
+                style={{ width: '300px', height: '300px' }}
+              />
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                style={{
+                  fontSize: '5rem',
+                  fontWeight: 'bold',
+                  color: winner.winner === 'X' ? 'var(--primary-light)' : 'var(--secondary-light)',
+                  textShadow: '0 0 30px rgba(255,255,255,0.3)',
+                  background: `linear-gradient(135deg, 
+                    ${winner.winner === 'X' ? 'var(--primary-light)' : 'var(--secondary-light)'} 0%,
+                    ${winner.winner === 'X' ? 'var(--primary)' : 'var(--secondary)'} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  padding: '1rem'
+                }}
+              >
+                {winner.winner} Wins!
+              </motion.div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
