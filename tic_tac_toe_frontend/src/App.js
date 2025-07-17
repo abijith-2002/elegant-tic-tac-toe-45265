@@ -82,11 +82,17 @@ function App() {
     <div className="App">
       {showConfetti && <Confetti />}
       <motion.h1
+        className="welcome-heading"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ 
+          type: "spring",
+          stiffness: 100,
+          damping: 15,
+          duration: 0.8
+        }}
       >
-        Tic Tac Toe
+        Welcome to Tic Tac Toe
       </motion.h1>
       <motion.div
         className="status"
