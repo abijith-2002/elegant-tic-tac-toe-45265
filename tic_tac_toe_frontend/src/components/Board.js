@@ -136,7 +136,11 @@ const Board = ({ squares, onClick, winningLine }) => {
   };
 
   return (
-    <div className="board">
+    <div 
+      className="board"
+      role="grid"
+      aria-label="Tic Tac Toe Board"
+    >
       {squares.map((square, i) => (
         <motion.button
           key={i}
@@ -144,6 +148,10 @@ const Board = ({ squares, onClick, winningLine }) => {
             winningLine?.includes(i) ? 'winning' : ''
           }`}
           onClick={() => onClick(i)}
+          disabled={square !== null} // Prevent double-clicks
+          aria-label={`Cell ${i + 1}, ${square || 'empty'}`}
+          role="gridcell"
+          tabIndex={0}
           variants={cellVariants}
           initial="initial"
           animate="animate"

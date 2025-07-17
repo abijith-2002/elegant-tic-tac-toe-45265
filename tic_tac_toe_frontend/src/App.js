@@ -35,10 +35,19 @@ function App() {
 
   useEffect(() => {
     if (gameMode === 'AI' && !xIsNext && !gameOver) {
+      // Add slight randomization to AI "thinking" time for more natural feel
+      const minDelay = 600;
+      const maxDelay = 1200;
+      const randomDelay = Math.floor(Math.random() * (maxDelay - minDelay) + minDelay);
+      
+      // Show thinking cursor during AI turn
+      document.body.style.cursor = 'wait';
+      
       const timer = setTimeout(() => {
         const aiMove = calculateBestMove(squares);
         handleClick(aiMove);
-      }, 800);
+        document.body.style.cursor = 'default';
+      }, randomDelay);
       return () => clearTimeout(timer);
     }
   }, [xIsNext, gameMode, gameOver]);

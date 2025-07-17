@@ -29,8 +29,10 @@ const WelcomeModal = ({ onContinue }) => {
     exit: { 
       opacity: 0,
       scale: 0.95,
+      y: 30,
       transition: { 
-        duration: 0.5,
+        duration: 0.4,
+        ease: [0.4, 0, 0.2, 1],
         when: "afterChildren",
         staggerChildren: 0.1
       }
