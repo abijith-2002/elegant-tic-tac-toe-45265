@@ -7,7 +7,6 @@ import Scoreboard from './components/Scoreboard';
 import ModeSelector from './components/ModeSelector';
 import { calculateWinner, calculateBestMove } from './utils/ai';
 import clickSound from './assets/sounds/click.mp3';
-import './App.css';
 
 function App() {
   const [squares, setSquares] = useState(Array(9).fill(null));
@@ -15,6 +14,7 @@ function App() {
   const [gameMode, setGameMode] = useState(null);
   const [scores, setScores] = useState({ X: 0, O: 0, ties: 0 });
   const [showConfetti, setShowConfetti] = useState(false);
+  const [winAnimation, setWinAnimation] = useState(false);
   const [playClick] = useSound(clickSound, { volume: 0.5 });
 
   const winner = calculateWinner(squares);
@@ -25,7 +25,7 @@ function App() {
       const timer = setTimeout(() => {
         const aiMove = calculateBestMove(squares);
         handleClick(aiMove);
-      }, 500);
+      }, 800); // Increased delay for more natural AI response
       return () => clearTimeout(timer);
     }
   }, [xIsNext, gameMode, gameOver]);
@@ -33,11 +33,15 @@ function App() {
   useEffect(() => {
     if (winner) {
       setShowConfetti(true);
+      setWinAnimation(true);
       setScores(prev => ({
         ...prev,
         [winner.winner]: prev[winner.winner] + 1
       }));
-      const timer = setTimeout(() => setShowConfetti(false), 4500);
+      const timer = setTimeout(() => {
+        setShowConfetti(false);
+        setWinAnimation(false);
+      }, 4500);
       return () => clearTimeout(timer);
     } else if (gameOver) {
       setScores(prev => ({ ...prev, ties: prev.ties + 1 }));
@@ -57,20 +61,22 @@ function App() {
   const resetGame = () => {
     setSquares(Array(9).fill(null));
     setXIsNext(true);
+    setWinAnimation(false);
   };
 
   const handleModeSelect = (mode) => {
     setGameMode(mode);
     resetGame();
+    setScores({ X: 0, O: 0, ties: 0 });
   };
 
   const getStatus = () => {
     if (winner) {
-      return `Winner: ${winner.winner}`;
+      return `${winner.winner} Wins!`;
     } else if (squares.every(square => square)) {
-      return "Game Draw!";
+      return "It's a Draw!";
     } else {
-      return `Next player: ${xIsNext ? 'X' : 'O'}`;
+      return `${xIsNext ? 'X' : 'O'}'s Turn`;
     }
   };
 
@@ -80,47 +86,64 @@ function App() {
 
   return (
     <div className="App">
-      {showConfetti && (
-        <Confetti
-          width={window.innerWidth}
-          height={window.innerHeight}
-          recycle={false}
-          numberOfPieces={200}
-          gravity={0.3}
-          initialVelocityY={20}
-          colors={['var(--primary)', 'var(--secondary)', 'var(--accent)', '#ffffff']}
-          onConfettiComplete={() => setShowConfetti(false)}
-        />
-      )}
+      <AnimatePresence>
+        {showConfetti && (
+          <Confetti
+            width={window.innerWidth}
+            height={window.innerHeight}
+            recycle={false}
+            numberOfPieces={300}
+            gravity={0.2}
+            initialVelocityY={20}
+            colors={['#1976d2', '#f50057', '#ffd600', '#ffffff']}
+            onConfettiComplete={() => setShowConfetti(false)}
+          />
+        )}
+      </AnimatePresence>
+
       <motion.h1
         className="welcome-heading"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ 
+        transition={{
           type: "spring",
           stiffness: 100,
           damping: 15,
           duration: 0.8
         }}
       >
-        Welcome to Tic Tac Toe
+        Tic Tac Toe
       </motion.h1>
+
       <motion.div
         className="status"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         key={getStatus()}
+        transition={{ duration: 0.3 }}
       >
         {getStatus()}
       </motion.div>
-      <div className="game-container">
+
+      <motion.div
+        className="game-container"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{
+          type: "spring",
+          stiffness: 200,
+          damping: 20
+        }}
+      >
         <Board
           squares={squares}
           onClick={handleClick}
           winningLine={winner?.line}
         />
+
         <div className="controls">
           <Scoreboard scores={scores} />
+          
           <motion.button
             className="button button-primary"
             onClick={resetGame}
@@ -129,6 +152,7 @@ function App() {
           >
             Reset Game
           </motion.button>
+
           <motion.button
             className="button button-secondary"
             onClick={() => setGameMode(null)}
@@ -138,7 +162,34 @@ function App() {
             Change Mode
           </motion.button>
         </div>
-      </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {winAnimation && (
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 200,
+              damping: 20
+            }}
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              fontSize: '5rem',
+              color: winner.winner === 'X' ? 'var(--primary)' : 'var(--secondary)',
+              textShadow: '0 0 20px rgba(255,255,255,0.5)',
+              zIndex: 1000
+            }}
+          >
+            {winner.winner} Wins!
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
