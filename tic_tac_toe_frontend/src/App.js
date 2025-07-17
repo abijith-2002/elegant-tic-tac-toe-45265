@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import WelcomeModal from './components/WelcomeModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import useSound from 'use-sound';
 import Confetti from 'react-confetti';
@@ -16,6 +17,7 @@ function App() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [winAnimation, setWinAnimation] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(true);
   const [playClick] = useSound(clickSound, { volume: 0.5 });
 
   const winner = calculateWinner(squares);
@@ -95,6 +97,10 @@ function App() {
         <div className="loading-spinner" />
       </div>
     );
+  }
+
+  if (showWelcome) {
+    return <WelcomeModal onContinue={() => setShowWelcome(false)} />;
   }
 
   if (!gameMode) {

@@ -708,6 +708,80 @@ body {
   }
 }
 
+/* Welcome Modal */
+.welcome-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.98);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.welcome-modal-content {
+  background: var(--glass-bg);
+  padding: 4rem;
+  border-radius: var(--border-radius-xl);
+  text-align: center;
+  backdrop-filter: blur(calc(var(--blur-strength) * 1.5));
+  border: 1px solid var(--glass-border);
+  box-shadow: 
+    0 30px 60px -15px var(--glass-shadow),
+    inset 0 0 50px var(--glass-shine);
+  position: relative;
+  overflow: hidden;
+  max-width: 600px;
+  width: 90%;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.welcome-modal-content::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05) 25%,
+    transparent 50%
+  );
+  border-radius: calc(var(--border-radius-xl) - 1px);
+  pointer-events: none;
+}
+
+.welcome-modal-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+}
+
+.welcome-modal-description {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+  line-height: 1.6;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.welcome-modal-button {
+  font-size: 1.25rem;
+  padding: 1.25rem 3rem;
+  margin-top: 1rem;
+}
+
 /* Loading and Transition Effects */
 .loading-overlay {
   position: fixed;
