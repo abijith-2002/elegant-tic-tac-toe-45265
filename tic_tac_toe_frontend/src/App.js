@@ -15,17 +15,26 @@ function App() {
   const [scores, setScores] = useState({ X: 0, O: 0, ties: 0 });
   const [showConfetti, setShowConfetti] = useState(false);
   const [winAnimation, setWinAnimation] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [playClick] = useSound(clickSound, { volume: 0.5 });
 
   const winner = calculateWinner(squares);
   const gameOver = winner || squares.every(square => square !== null);
 
   useEffect(() => {
+    // Simulated loading effect
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     if (gameMode === 'AI' && !xIsNext && !gameOver) {
       const timer = setTimeout(() => {
         const aiMove = calculateBestMove(squares);
         handleClick(aiMove);
-      }, 800); // Increased delay for more natural AI response
+      }, 800);
       return () => clearTimeout(timer);
     }
   }, [xIsNext, gameMode, gameOver]);
@@ -80,6 +89,14 @@ function App() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="loading-overlay">
+        <div className="loading-spinner" />
+      </div>
+    );
+  }
+
   if (!gameMode) {
     return <ModeSelector onSelectMode={handleModeSelect} />;
   }
@@ -92,17 +109,17 @@ function App() {
             width={window.innerWidth}
             height={window.innerHeight}
             recycle={false}
-            numberOfPieces={300}
+            numberOfPieces={500}
             gravity={0.2}
             initialVelocityY={20}
-            colors={['#1976d2', '#f50057', '#ffd600', '#ffffff']}
+            colors={['#6366f1', '#ec4899', '#fbbf24', '#ffffff']}
             onConfettiComplete={() => setShowConfetti(false)}
           />
         )}
       </AnimatePresence>
 
-      <motion.h1
-        className="welcome-heading"
+      <motion.div
+        className="welcome-section"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{
@@ -112,8 +129,8 @@ function App() {
           duration: 0.8
         }}
       >
-        Tic Tac Toe
-      </motion.h1>
+        <h1 className="welcome-heading">Tic Tac Toe</h1>
+      </motion.div>
 
       <motion.div
         className="status"
@@ -181,7 +198,7 @@ function App() {
               left: '50%',
               transform: 'translate(-50%, -50%)',
               fontSize: '5rem',
-              color: winner.winner === 'X' ? 'var(--primary)' : 'var(--secondary)',
+              color: winner.winner === 'X' ? 'var(--primary-light)' : 'var(--secondary-light)',
               textShadow: '0 0 20px rgba(255,255,255,0.5)',
               zIndex: 1000
             }}

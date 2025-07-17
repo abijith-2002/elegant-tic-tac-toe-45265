@@ -10,12 +10,26 @@ const Board = ({ squares, onClick, winningLine }) => {
 
   const symbolVariants = {
     x: {
-      initial: { pathLength: 0, stroke: 'var(--primary)' },
-      animate: { pathLength: 1, transition: { duration: 0.5 } }
+      initial: { pathLength: 0, opacity: 0 },
+      animate: { 
+        pathLength: 1, 
+        opacity: 1,
+        transition: { 
+          duration: 0.5,
+          ease: "easeInOut"
+        }
+      }
     },
     o: {
-      initial: { pathLength: 0, stroke: 'var(--secondary)' },
-      animate: { pathLength: 1, transition: { duration: 0.5 } }
+      initial: { pathLength: 0, opacity: 0 },
+      animate: { 
+        pathLength: 1, 
+        opacity: 1,
+        transition: { 
+          duration: 0.5,
+          ease: "easeInOut"
+        }
+      }
     }
   };
 
@@ -24,39 +38,63 @@ const Board = ({ squares, onClick, winningLine }) => {
 
     if (value === 'X') {
       return (
-        <svg width="60" height="60" viewBox="0 0 60 60">
-          <motion.line
-            x1="15" y1="15" x2="45" y2="45"
-            strokeWidth="4"
-            stroke="var(--primary)"
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <motion.path
+            d="M20 20L60 60M60 20L20 60"
+            stroke="var(--primary-light)"
+            strokeWidth="8"
+            strokeLinecap="round"
+            fill="none"
             variants={symbolVariants.x}
             initial="initial"
             animate="animate"
-            strokeLinecap="round"
           />
-          <motion.line
-            x1="45" y1="15" x2="15" y2="45"
-            strokeWidth="4"
+          <motion.path
+            d="M20 20L60 60"
             stroke="var(--primary)"
+            strokeWidth="4"
+            strokeLinecap="round"
+            fill="none"
             variants={symbolVariants.x}
             initial="initial"
             animate="animate"
+          />
+          <motion.path
+            d="M60 20L20 60"
+            stroke="var(--primary)"
+            strokeWidth="4"
             strokeLinecap="round"
+            fill="none"
+            variants={symbolVariants.x}
+            initial="initial"
+            animate="animate"
           />
         </svg>
       );
     } else {
       return (
-        <svg width="60" height="60" viewBox="0 0 60 60">
+        <svg width="80" height="80" viewBox="0 0 80 80">
           <motion.circle
-            cx="30" cy="30" r="15"
-            strokeWidth="4"
-            stroke="var(--secondary)"
+            cx="40"
+            cy="40"
+            r="25"
+            stroke="var(--secondary-light)"
+            strokeWidth="8"
             fill="none"
             variants={symbolVariants.o}
             initial="initial"
             animate="animate"
-            strokeLinecap="round"
+          />
+          <motion.circle
+            cx="40"
+            cy="40"
+            r="25"
+            stroke="var(--secondary)"
+            strokeWidth="4"
+            fill="none"
+            variants={symbolVariants.o}
+            initial="initial"
+            animate="animate"
           />
         </svg>
       );
@@ -77,8 +115,8 @@ const Board = ({ squares, onClick, winningLine }) => {
           animate="animate"
           exit="exit"
           whileHover={{ 
-            scale: 1.1,
-            boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+            scale: 1.05,
+            boxShadow: '0 15px 30px rgba(0,0,0,0.3)',
             transition: { duration: 0.2 }
           }}
           whileTap={{ scale: 0.95 }}
