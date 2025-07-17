@@ -1,21 +1,46 @@
 :root {
-  /* Premium Color Palette */
-  --primary: #4f46e5;
-  --primary-light: #6366f1;
-  --secondary: #e11d48;
-  --secondary-light: #f43f5e;
-  --accent: #eab308;
-  --success: #22c55e;
-  --bg-start: #030712;
-  --bg-end: #1e1b4b;
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shine: rgba(255, 255, 255, 0.02);
-  --glass-shadow: rgba(0, 0, 0, 0.2);
+  /* Ultra Modern Color Palette */
+  --primary: #6d28d9;
+  --primary-light: #8b5cf6;
+  --primary-glow: rgba(109, 40, 217, 0.4);
+  --secondary: #db2777;
+  --secondary-light: #ec4899;
+  --secondary-glow: rgba(219, 39, 119, 0.4);
+  --accent: #f59e0b;
+  --accent-glow: rgba(245, 158, 11, 0.4);
+  --success: #10b981;
+  --success-glow: rgba(16, 185, 129, 0.4);
+  
+  /* Gradients and Backgrounds */
+  --bg-start: #0f172a;
+  --bg-mid: #1e1b4b;
+  --bg-end: #312e81;
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-hover: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shine: rgba(255, 255, 255, 0.03);
+  --glass-shadow: rgba(0, 0, 0, 0.25);
+  
+  /* Typography */
   --text-primary: rgba(255, 255, 255, 0.95);
   --text-secondary: rgba(255, 255, 255, 0.7);
-  --blur-strength: 12px;
-  --grid-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  
+  /* Effects */
+  --blur-strength: 15px;
+  --blur-strength-light: 8px;
+  --grid-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  --glow-strength: 20px;
+  --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Dimensions */
+  --border-radius-sm: 12px;
+  --border-radius-md: 20px;
+  --border-radius-lg: 30px;
+  --border-radius-xl: 40px;
+  
+  /* Animations */
+  --spring-bounce: cubic-bezier(0.4, 2.5, 0.6, 1);
 }
 
 body {
@@ -33,9 +58,32 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 2rem;
   position: relative;
   overflow: hidden;
+  gap: 2.5rem;
+}
+
+.App::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    var(--glass-bg) 0%,
+    transparent 70%
+  );
+  animation: rotate 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* Glassmorphic Welcome Section */
@@ -81,18 +129,56 @@ body {
   display: flex;
   gap: 4rem;
   align-items: flex-start;
-  margin-top: 2rem;
-  padding: 3.5rem;
-  border-radius: 40px;
+  padding: 4rem;
+  border-radius: var(--border-radius-xl);
   background: var(--glass-bg);
   backdrop-filter: blur(var(--blur-strength));
   border: 1px solid var(--glass-border);
   box-shadow: 
-    0 25px 50px -12px var(--glass-shadow),
-    inset 0 0 80px var(--glass-shine);
+    0 30px 60px -15px var(--glass-shadow),
+    inset 0 0 100px var(--glass-shine);
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: var(--transition-smooth);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.game-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.game-container::after {
+  content: '';
+  position: absolute;
+  top: -150%;
+  left: -150%;
+  width: 400%;
+  height: 400%;
+  background: radial-gradient(
+    circle at center,
+    var(--glass-shine) 0%,
+    transparent 60%
+  );
+  transform: rotate(45deg);
+  animation: shine 10s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes shine {
+  from { transform: rotate(0deg) translateY(0%); }
+  to { transform: rotate(360deg) translateY(-50%); }
 }
 
 .game-container:hover {
@@ -133,26 +219,67 @@ body {
 }
 
 .cell {
-  width: 130px;
-  height: 130px;
+  width: 140px;
+  height: 140px;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  border-radius: 25px;
-  font-size: 4rem;
+  border-radius: var(--border-radius-lg);
+  font-size: 4.5rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition-smooth);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
   transform-style: preserve-3d;
-  perspective: 1000px;
-  backdrop-filter: blur(calc(var(--blur-strength) * 0.5));
+  perspective: 1200px;
+  backdrop-filter: blur(var(--blur-strength-light));
   box-shadow: 
-    0 10px 30px -10px var(--glass-shadow),
-    inset 0 0 20px var(--glass-shine);
+    0 15px 35px -10px var(--glass-shadow),
+    inset 0 0 30px var(--glass-shine);
+}
+
+.cell::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent
+  );
+  border-radius: calc(var(--border-radius-lg) - 1px);
+  opacity: 0;
+  transition: var(--transition-smooth);
+}
+
+.cell:hover::before {
+  opacity: 1;
+}
+
+.cell::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: radial-gradient(
+    circle at center,
+    var(--glass-shine) 0%,
+    transparent 60%
+  );
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: var(--transition-smooth);
+}
+
+.cell:hover::after {
+  opacity: 0.5;
+  animation: shine 2s infinite linear;
 }
 
 .cell::after {
@@ -244,19 +371,45 @@ body {
 
 /* Status Display */
 .status {
-  font-size: 2rem;
-  margin: 2rem 0;
-  font-weight: 600;
-  padding: 1.2rem 3rem;
-  border-radius: 20px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  padding: 1.5rem 4rem;
+  border-radius: var(--border-radius-lg);
   background: var(--glass-bg);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(var(--blur-strength));
   border: 1px solid var(--glass-border);
   box-shadow: 
-    0 10px 25px rgba(0, 0, 0, 0.2),
-    inset 0 0 15px var(--glass-shine);
+    0 15px 30px rgba(0, 0, 0, 0.25),
+    inset 0 0 25px var(--glass-shine);
   position: relative;
   overflow: hidden;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: linear-gradient(
+    135deg,
+    var(--primary-light) 0%,
+    var(--secondary-light) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.status::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent
+  );
+  border-radius: calc(var(--border-radius-lg) - 1px);
+  z-index: 1;
 }
 
 /* Controls Section */
